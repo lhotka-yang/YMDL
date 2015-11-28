@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <schemas xmlns="urn:ietf:params:xml:ns:yang:ietf-ymdl">
+    <top-schema>device</top-schema>
+    <schema>
+      <name>device</name>
+      <yang-modules>example-device</yang-modules>
+      <subschema>
+	<root>example-device:device</root>
+	<schemas>if-ip</schemas>
+	<schemas>system</schemas>
+      </subschema>
+      <subschema>
+	<root>example-device:device/LNEs/LNE</root>
+	<schemas>if-ip</schemas>
+      </subschema>
+    </schema>
+    <schema>
+      <name>if-ip</name>
+      <yang-modules>ietf-interfaces</yang-modules>
+      <yang-modules>ietf-ip</yang-modules>
+    </schema>
+    <schema>
+      <name>system</name>
+      <yang-modules>ietf-system</yang-modules>
+    </schema>
+  </schemas>
+</data>

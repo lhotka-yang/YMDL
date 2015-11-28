@@ -1,12 +1,12 @@
-I_D = # Name of the Internet-Draft (without revision)
-REVNO = # I-D revision number
+I_D = draft-lhotka-netmod-ymdl
+REVNO = 00
 DATE ?= $(shell date +%F)
-MODULES =
-FIGURES = model.tree
+MODULES = ietf-ymdl
+FIGURES = model.tree example-device.yang
 EXAMPLE_BASE = example
-EXAMPLE_TYPE = get-reply
+EXAMPLE_TYPE = data
 baty = $(EXAMPLE_BASE)-$(EXAMPLE_TYPE)
-EXAMPLE_INST = $(baty).xml
+EXAMPLE_INST = $(baty).json
 PYANG_OPTS =
 
 artworks = $(addsuffix .aw, $(yams)) $(EXAMPLE_INST).aw \
@@ -102,6 +102,13 @@ validate: $(EXAMPLE_INST) $(schemas)
 model.tree: hello.xml
 	pyang $(PYANG_OPTS) -f tree -o $@ -L $<
 
+model.xsl: hello.xml
+	@pyang -o $@ -f jsonxsl -L $<
+
+$(baty).json: model.xsl $(baty).xml
+	@xsltproc --output $@ $^
+
 clean:
-	@rm -rf *.rng *.rnc *.sch *.dsrl hello.xml model.tree \
-	        $(yams) $(idrev).* $(artworks) figures.ent yang.ent
+	@rm -rf *.rng *.rnc *.sch *.dsrl hello.xml model.tree model.xsl \
+	        $(yams) $(idrev).* $(artworks) figures.ent yang.ent \
+		$(baty).json example-device.yang

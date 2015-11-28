@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module name="ietf-ymdl"
+        xmlns="urn:ietf:params:xml:ns:yang:yin:1"
+        xmlns:ymdl="urn:ietf:params:xml:ns:yang:ietf-ymdl"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:xi="http://www.w3.org/2001/XInclude">
+  <namespace uri="urn:ietf:params:xml:ns:yang:ietf-ymdl"/>
+  <prefix value="ymdl"/>
+  <import module="ietf-yang-types">
+    <prefix value="yang"/>
+  </import>
+  <organization>
+    <text>IETF NETMOD (NETCONF Data Modeling Language) Working Group</text>
+  </organization>
+  <contact>
+    <text>
+      <xi:include href=".tools/bplate/netmod-module.yinx"
+                  xpointer="xpointer(id('contact')/*)"/>
+      <h:p>
+        Editor:   Ladislav Lhotka<h:br/>
+                  &lt;mailto:lhotka@nic.cz&gt;
+      </h:p>
+    </text>
+  </contact>
+  <description>
+    <text>
+      <h:p>This module defines YANG Module Dispatching Language
+      (YMDL) – a meta-schema language for YANG-based data
+      models.</h:p>
+      <h:p>A YMDL schema allows for embedding a YANG schema as a
+      subschema in a specific location of another module.</h:p>
+      <xi:include href=".tools/bplate/netmod-module.yinx"
+                  xpointer="xpointer(id('desc')/*)"/>
+    </text>
+  </description>
+  <revision date="2015-11-28">
+    <description>
+      <text>Initial revision.</text>
+    </description>
+    <reference>
+      <text>
+	RFC XXXX: YANG Module Dispatching Language
+      </text>
+    </reference>
+  </revision>
+
+  <!-- Typedefs -->
+
+  <typedef name="schema-node-path">
+    <type name="string">
+      <pattern value="[a-zA-Z_][a-zA-Z0-9\-_.]*:[a-zA-Z_][a-zA-Z0-9\-_.]*(/([a-zA-Z_][a-zA-Z0-9\-_.]*:)?[a-zA-Z_][a-zA-Z0-9\-_.]*)*"><?delim *?></pattern>
+    </type>
+    <description>
+      <text>
+	<h:p>Intra-schema path to a YANG schema node.</h:p>
+	<h:p>The value is a sequence of schema node names separated by
+	the slash character ('/'). The first (leftmost) component is
+	prefixed with the name of the YANG module in which the schema
+	node is defined. A subsequent component has the module prefix
+	if and only if the preceding schema node is defined in another
+	module.</h:p>
+      </text>
+    </description>
+  </typedef>
+
+  <typedef name="schema-ref">
+    <type name="leafref">
+      <path value="/ymdl:schemas/ymdl:schema/ymdl:name"/>
+    </type>
+    <description>
+      <text>
+	Reference to a schema.
+      </text>
+    </description>
+  </typedef>
+
+  <!-- YMDL -->
+
+  <container name="schemas">
+    <description>
+      <text>
+	Container for YMDL schemas.
+      </text>
+    </description>
+    <leaf name="top-schema">
+      <type name="schema-ref"/>
+      <description>
+	<text>
+	  Reference to the top-level schema.
+	</text>
+      </description>
+    </leaf>
+    <list name="schema">
+      <key value="name"/>
+      <min-elements value="1"/>
+      <description>
+	<text>
+	  Each entry is a named schema. Exactly one entry must be the
+	  top-level schema, other (optional) entries can be used as
+	  subschemas.
+	</text>
+      </description>
+      <leaf name="name">
+	<type name="string"/>
+	<description>
+	  <text>
+	    Name of the schema.
+	  </text>
+	</description>
+      </leaf>
+      <leaf-list name="yang-modules">
+	<min-elements value="1"/>
+	<type name="yang:yang-identifier"/>
+	<description>
+	  <text>
+	    Each entry is the name of a YANG module contributing to
+	    the schema.
+	  </text>
+	</description>
+      </leaf-list>
+      <list name="subschema">
+	<key value="root"/>
+	<description>
+	  <text>
+	    Each entry is a subschema attached to the parent schema.
+	  </text>
+	</description>
+	<leaf name="root">
+	  <description>
+	    <text>
+	      <h:p>Each entry specifies the relative (intra-schema)
+	      path to the root node where the subschema is
+	      attached.</h:p>
+	      <h:p>The absolute path of the root node depends on the
+	      structure of schemas:</h:p>
+	      <h:ul>
+		<h:li>For the top-level schema, the root is always
+		'/'.</h:li>
+		<h:li>For other schemas, the root path is formed by
+		concatenation of the corresponding root paths of all
+		ancestor schemas.</h:li>
+	      </h:ul>
+	    </text>
+	  </description>
+	  <type name="schema-node-path"/>
+	</leaf>
+	<leaf-list name="schemas">
+	  <type name="schema-ref"/>
+	  <description>
+	    <text>
+	      References to schemas that comprise the subschema.
+	    </text>
+	  </description>
+	</leaf-list>
+      </list>
+    </list>
+  </container>
+</module>

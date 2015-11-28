@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module name="example-device"
+        xmlns="urn:ietf:params:xml:ns:yang:yin:1"
+        xmlns:exdev="http://www.example.net/example-device"
+        xmlns:h="http://www.w3.org/1999/xhtml">
+  <namespace uri="http://www.example.net/example-device"/>
+  <prefix value="exdev"/>
+  <container name="device">
+    <container name="LNEs">
+      <list name="LNE">
+	<key value="name"/>
+	<leaf name="name">
+	  <type name="string"/>
+	</leaf>
+      </list>
+    </container>
+  </container>
+</module>
