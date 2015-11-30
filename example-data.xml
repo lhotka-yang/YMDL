@@ -11,7 +11,7 @@
 	<schemas>system</schemas>
       </subschema>
       <subschema>
-	<root>example-device:device/LNEs/LNE</root>
+	<root>example-device:device/logical-NEs/logical-NE</root>
 	<schemas>if-ip</schemas>
       </subschema>
     </schema>

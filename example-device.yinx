@@ -6,8 +6,8 @@
   <namespace uri="http://www.example.net/example-device"/>
   <prefix value="exdev"/>
   <container name="device">
-    <container name="LNEs">
-      <list name="LNE">
+    <container name="logical-NEs">
+      <list name="logical-NE">
 	<key value="name"/>
 	<leaf name="name">
 	  <type name="string"/>
