@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<module name="ietf-ymdl"
+<module name="ietf-ysdl"
         xmlns="urn:ietf:params:xml:ns:yang:yin:1"
-        xmlns:ymdl="urn:ietf:params:xml:ns:yang:ietf-ymdl"
+        xmlns:ysdl="urn:ietf:params:xml:ns:yang:ietf-ysdl"
         xmlns:h="http://www.w3.org/1999/xhtml"
         xmlns:xi="http://www.w3.org/2001/XInclude">
-  <namespace uri="urn:ietf:params:xml:ns:yang:ietf-ymdl"/>
-  <prefix value="ymdl"/>
+  <namespace uri="urn:ietf:params:xml:ns:yang:ietf-ysdl"/>
+  <prefix value="ysdl"/>
   <import module="ietf-yang-types">
     <prefix value="yang"/>
   </import>
@@ -24,10 +24,10 @@
   </contact>
   <description>
     <text>
-      <h:p>This module defines YANG Module Dispatching Language
-      (YMDL) – a meta-schema language for YANG-based data
+      <h:p>This module defines YANG Schema Dispatching Language
+      (YSDL) – a meta-schema language for YANG-based data
       models.</h:p>
-      <h:p>A YMDL schema allows for embedding a YANG schema as a
+      <h:p>A YSDL schema allows for embedding a YANG schema as a
       subschema in a specific location of another module.</h:p>
       <xi:include href=".tools/bplate/netmod-module.yinx"
                   xpointer="xpointer(id('desc')/*)"/>
@@ -39,7 +39,7 @@
     </description>
     <reference>
       <text>
-	RFC XXXX: YANG Module Dispatching Language
+	RFC XXXX: YANG Schema Dispatching Language
       </text>
     </reference>
   </revision>
@@ -65,7 +65,7 @@
 
   <typedef name="schema-ref">
     <type name="leafref">
-      <path value="/ymdl:schemas/ymdl:schema/ymdl:name"/>
+      <path value="/ysdl:schemas/ysdl:schema/ysdl:name"/>
     </type>
     <description>
       <text>
@@ -74,12 +74,12 @@
     </description>
   </typedef>
 
-  <!-- YMDL -->
+  <!-- YSDL -->
 
   <container name="schemas">
     <description>
       <text>
-	Container for YMDL schemas.
+	Container for YSDL schemas.
       </text>
     </description>
     <leaf name="top-schema">

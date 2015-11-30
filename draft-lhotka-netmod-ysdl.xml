@@ -22,7 +22,7 @@
 
 <rfc category="std">
   <front>
-    <title abbrev="i-d-abbrev">YANG Module Dispatching Language</title>
+    <title abbrev="i-d-abbrev">YANG Schema Dispatching Language</title>
     <author fullname="Ladislav Lhotka" initials="L." surname="Lhotka">
       <organization>CZ.NIC</organization>
       <address>
@@ -48,7 +48,7 @@
 	&treesym;
 
     </section>
-    <section anchor="data-model" title="YMDL Data Model">
+    <section anchor="data-model" title="YSDL Data Model">
     
       <figure>
 	&model.tree;
@@ -56,12 +56,12 @@
 
     </section>
 
-    <section anchor="yang" title="YMDL YANG Module">
+    <section anchor="yang" title="YSDL YANG Module">
 
       <t></t>
 
       <figure>
-	&ietf-ymdl.yang;
+	&ietf-ysdl.yang;
       </figure>
 
     </section>

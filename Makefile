@@ -1,7 +1,7 @@
-I_D = draft-lhotka-netmod-ymdl
+I_D = draft-lhotka-netmod-ysdl
 REVNO = 00
 DATE ?= $(shell date +%F)
-MODULES = ietf-ymdl
+MODULES = ietf-ysdl
 FIGURES = model.tree example-device.yang
 EXAMPLE_BASE = example
 EXAMPLE_TYPE = data
