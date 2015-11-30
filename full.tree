@@ -1,0 +1,16 @@
+module: example-device
+   +--rw device
+      +--rw if:interfaces
+      |  ...
+      +--ro if:interfaces-state
+      |  ...
+      +--rw sys:system
+      |  ...
+      +--rw sys:system-state
+      +--rw logical-NEs
+         +--rw logical-NE* [name]
+            +--rw name    string
+            +--rw if:interfaces
+            |  ...
+            +--ro if:interfaces-state
+            |  ...

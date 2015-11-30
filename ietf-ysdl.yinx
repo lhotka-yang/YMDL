@@ -130,7 +130,8 @@
 	    <text>
 	      <h:p>Each entry specifies the relative (intra-schema)
 	      path to the root node where the subschema is
-	      attached.</h:p>
+	      attached. The schema node MUST be one of: container,
+	      list, case or anydata.</h:p>
 	      <h:p>The absolute path of the root node depends on the
 	      structure of schemas:</h:p>
 	      <h:ul>

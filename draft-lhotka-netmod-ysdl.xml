@@ -34,31 +34,138 @@
     &netmod-wg;
 
     <abstract>
-      <t></t>
+      <t>This document defines YANG Schema Dispatching Language
+      (YSDL). It is a meta-schema language that allows for combining
+      YANG modules into any number of schemas, and arranging these
+      schemas in a hierarchical structure.</t>
     </abstract>
   </front>
 
   <middle>
     <section anchor="introduction" title="Introduction">
-      <t><xref target="I-D.ietf-netmod-rfc6020bis"/></t>
+      <t>YANG data modelling language <xref
+      target="I-D.ietf-netmod-rfc6020bis"/> assumes that data trees
+      (configuration and state data) defined in YANG modules start at
+      the common global root. This means that the global path of every
+      dara node is fixed as soon as the data node is defined (for a
+      node defined in a grouping, the path is fixed when the grouping
+      is used).</t>
+      <t>Recent data modeling efforts, such as <xref
+      target="I-D.rtgyangdt-rtgwg-device-model"/> indicate that this
+      arrangement may be too restrictive. A typical use case is a data
+      model that was designed for a stand-alone device but later needs
+      to be reused for logical or virtual devices, and the original
+      data model has to be grafted as a submodel in a top-level schema
+      describing the organization of logical/virtual devices.</t>
+      <t>This document proposes a new minilanguage named YANG Schema
+      Dispatching Language (YSDL) as a solution to this problem. It is
+      a meta-schema language that allows for defining multiple schemas
+      comprising one or more YANG modules, and arrange the schemas in
+      a hierarchical structure.</t>
+      <t>As a useful side-effect, it is also possible to use YSDL
+      schemas to specify a data model for an "anydata" node at run
+      time.</t>
     </section>
     
-    <section anchor="terminology" title="Terminology">
-    
-	&treesym;
+    <section anchor="termnot" title="Terminology and Notation">
+      &kw-2119;
+
+      <t>The following terms are defined in <xref
+      target="I-D.ietf-netmod-rfc6020bis"/>:
+      <list style="symbols">
+        <t>action,</t>
+        <t>anydata,</t>
+        <t>augment,</t>
+        <t>container,</t>
+        <t>data node,</t>
+        <t>data tree,</t>
+        <t>identity,</t>
+        <t>instance identifier,</t>
+        <t>leaf,</t>
+        <t>leaf-list,</t>
+        <t>list,</t>
+        <t>module,</t>
+	<t>notification,</t>
+        <t>RPC operation,</t>
+        <t>schema node.</t>
+      </list></t>
+
+      <t>The term "server" denotes a server of a network management
+      protocol such as NETCONF <xref target="RFC6241"/> or
+      RESTCONF <xref target="I-D.ietf-netconf-restconf"/>.</t>
+
+      <t>A simplified graphical representation of the data model is
+      used in this document.  The meaning of the symbols in these
+      diagrams is as follows:</t>
+
+      &treesym;
 
     </section>
-    <section anchor="data-model" title="YSDL Data Model">
-    
+    <section anchor="ysdl" title="YANG Schema Dispatching Language">
+
+      <t>The YSDL syntax is defined in <xref target="yang"/> using
+      YANG in the role of a schema language. YSDL meta-schemas can be
+      serialized in any encoding supported by YANG, such as XML <xref
+      target="I-D.ietf-netmod-rfc6020bis"/> or JSON <xref
+      target="I-D.ietf-netmod-yang-json"/>.</t>
+      <t>YSDL meta-schemas are intended to be used in conjunction with
+      YANG Library <xref target="I-D.ietf-netconf-yang-library"/>:
+      names and revisions of YANG modules appearing in a meta-schema
+      SHALL be resolved from YANG Library data, and YANG Library
+      specifications of supported features and deviations MUST also be
+      taken into account.</t>
+      <t>A YSDL meta-schema only affects the main data tree
+      (configuration and state data), including actions. RPC
+      operations and notifications are handled exactly as specified in
+      <xref target="I-D.ietf-netmod-rfc6020bis"/>.</t>
+      <t>YANG tree diagram for a YSDL meta-schema is as follows:</t>
       <figure>
 	&model.tree;
       </figure>
+
+      <section anchor="schemas" title="YSDL Schemas">
+
+      <t>A YSDL meta-schema defines one or more schemas, each
+      comprising one or more YANG modules and zero or more
+      subschemas. The same YANG module can be part of multiple
+      schemas.</t>
+      <t>Exactly one of the schemas MUST be the top-level schema which
+      is identified by the "top-schema" leaf. The top-level schema
+      defines the uppermost structure of the entire data model, and
+      its root always coincides with the global root.</t>
+      <t>Any schema can define other schemas as its subschema. For
+      each subschema, the root node has to be specified. Any
+      "container", "list", "case" or "anydata" schema node contained
+      in one of the parent schema modules can act as the root
+      node.</t>
+      <t>Note that the traditional arrangement of YANG modules in a
+      data model can be achieved with a YSDL meta-schema in which all
+      modules are listed in the top-level schema, and no subschemas
+      are defined.</t>
+      </section>
+
+      <section anchor="validation"
+	       title="Validating Data with YSDL and YANG">
+
+	<t>The schema tree of a subschema is conceptually attached to
+	the parent schema tree as a subtree of the root node. In other
+	words, the first data node that is either the subschema root
+	or its ancestor coincides with the conceptual root of the
+	subschema data tree.</t>
+	<t>All paths (in leafrefs, instance-identifiers, XPath
+	expressions and target nodes of augments) are interpreted
+	within the subschema data or schema tree. Therefore, they
+	cannot refer to nodes in the ancestor schemas or other
+	subschemas.</t>
+      </section>
 
     </section>
 
     <section anchor="yang" title="YSDL YANG Module">
 
-      <t></t>
+      <t>The "ietf-ysdl" module below defines the YSDL meta-schema
+      language using YANG. However, it is not meant to be implemented
+      as datastore contents by a server.</t>
 
       <figure>
 	&ietf-ysdl.yang;
@@ -66,29 +173,89 @@
 
     </section>
 
-    <section anchor="example" title="Example">
+    <section anchor="example" title="Example YSDL Meta-Schema">
 
-      <t></t>
+      <t>The following YANG module will be used for the top-level
+      schema. It is a simplified analogy of the "network-device"
+      module from <xref target="I-D.rtgyangdt-rtgwg-device-model"/>.</t>
 
       <figure>
 	&example-device.yang;
       </figure>
 
-      <t></t>
+      <t>The YSDL meta-schema is as follows:</t>
 
       <figure>
 	&example-data.json;
       </figure>
 
-      <t></t>
+      <t>Apart prom the top-level schema, "device", the meta-schema
+      defines two other schemas:
+      <list style="symbols">
+	<t>"if-ip" schema consists of "ietf-interfaces" and "ietf-ip"
+	modules;</t>
+	<t>"system" schema consist of "ietf-system" module.</t>
+      </list></t>
+
+      <t>Two subschemas of the top-level schema defined with the
+      following root nodes:
+      <list style="symbols">
+	<t>"example-device:device",</t>
+	<t>"example-device:device/logical-NEs/logical-NE".</t>
+      </list>
+      The former one uses both "if-ip" and "system" schemas whereas
+      the latter uses only "system".</t>
+      <t>The entire schema tree consisting of the top-level schema and
+      the two subschemas is shown schematically in the following tree
+      diagram:</t>
+
+      <figure>
+	&full.tree;
+      </figure>
     </section>
 
     <section anchor="iana" title="IANA Considerations">
-      <t></t>
+      &ed-hint-fill-in;
+
+      <t>This document registers a URI in the "IETF XML registry"
+      <xref target="RFC3688"/>. Following the format in RFC 3688, the
+      following registration has been made.</t>
+      <figure>
+        <artwork>
+---------------------------------------------------------------------
+URI: urn:ietf:params:xml:ns:yang:ietf-ysdl
+
+Registrant Contact: The NETMOD WG of the IETF.
+
+XML: N/A, the requested URI is an XML namespace.
+---------------------------------------------------------------------
+        </artwork>
+      </figure>
+
+      <t>This document registers a YANG module in the "YANG Module
+      Names" registry <xref target="RFC6020"/>.</t>
+
+      <figure>
+        <artwork>
+---------------------------------------------------------------------
+name:         ietf-ysdl
+namespace:    urn:ietf:params:xml:ns:yang:ietf-ysdl
+prefix:       ysdl
+reference:    RFC XXXX
+---------------------------------------------------------------------
+        </artwork>
+      </figure>
     </section>
 
     <section anchor="security" title="Security Considerations">
-      <t></t>
+      <t>TBD</t>
+
+    </section>
+
+    <section anchor="ack" title="Acknowledgements">
+
+      <t>YSDL was loosely inspired by Namespace-based Validation
+      Dispatching Language (NVDL) <xref target="ISO.19757-4"/>.</t>
 
     </section>
 
@@ -96,8 +263,32 @@
 
   <back>
     <references title="Normative References">
+      &RFC2119;
+      &RFC3688;
+      &RFC6020;
+      &I-D.ietf-netconf-yang-library;
       &I-D.ietf-netmod-rfc6020bis;
     </references>
 
+    <references title="Informative References">
+      &I-D.rtgyangdt-rtgwg-device-model;
+      &I-D.ietf-netmod-yang-json;
+      &RFC6241;
+      &I-D.ietf-netconf-restconf;
+      <reference anchor="ISO.19757-4">
+        <front>
+          <title>
+            Document Schema Definition Languages (DSDL) – Part 4:
+	    Namespace-based Validation Dispatching Language (NVDL)
+          </title>
+          <author>
+            <organization>International Organization for Standardization</organization>
+          </author>
+          <date day="1" month="June" year="2006"/>
+        </front>
+        <seriesInfo name="ISO/IEC" value="19757-4"/>
+        <format type="PDF" target="http://standards.iso.org/ittf/PubliclyAvailableStandards/c038615_ISO_IEC_19757-4_2006(E).zip"/>
+      </reference>
+    </references>
   </back>
 </rfc>
